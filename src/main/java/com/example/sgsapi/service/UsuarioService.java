@@ -25,7 +25,7 @@ public class UsuarioService implements UserDetailsService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void cadastrarUsuario(UsuarioDTO dto) {
+    public Long cadastrarUsuario(UsuarioDTO dto) {
         Usuario novoUsuario = new Usuario();
         novoUsuario.setNome(dto.getNome());
         novoUsuario.setLogin(dto.getLogin());
@@ -37,6 +37,8 @@ public class UsuarioService implements UserDetailsService {
         novoUsuario.setGrupo(dto.getGrupo());
 
         usuarioRepository.save(novoUsuario);
+
+        return novoUsuario.getId();
     }
 
     public void alterarUsuario(Long id, String nome, String login, String senha, Perfil grupo) {
@@ -67,10 +69,14 @@ public class UsuarioService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepository.findByLogin(username).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
 
+        String[] roles = usuario.getGrupo() == Perfil.ADMINISTRADOR
+                ? new String[]{"ADMIN", "USER"}
+                : new String[]{"USER"};
+
         return User.builder()
-                .username(usuario.getLogin()) // Trocado para getLogin()
+                .username(usuario.getLogin())
                 .password(usuario.getSenha())
-                .roles(usuario.getGrupo().name())
+                .roles(roles)
                 .build();
     }
 }

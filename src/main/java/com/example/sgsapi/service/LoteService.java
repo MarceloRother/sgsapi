@@ -1,6 +1,5 @@
 package com.example.sgsapi.service;
 
-import com.example.sgsapi.api.dto.ItemDTO;
 import com.example.sgsapi.api.dto.LoteDTO;
 import com.example.sgsapi.model.entity.Item;
 import com.example.sgsapi.model.entity.Lote;
@@ -37,7 +36,7 @@ public class LoteService {
         novoLote.setItem(itemReal);
         novoLote.setRemessa(remessaReal);
         novoLote.setDataValidade(dto.getDataValidade());
-        novoLote.setCustoFabrica(dto.getCustoFabrica());
+        novoLote.setPrecoFabrica(dto.getPrecoFabrica());
         novoLote.setQuantidade(dto.getQuantidade());
 
         Lote loteSalvo = loteRepository.save(novoLote);

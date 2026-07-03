@@ -2,11 +2,14 @@ package com.example.sgsapi.api.controller;
 
 import com.example.sgsapi.api.dto.ItemDTO;
 import com.example.sgsapi.service.ItemService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Item", description = "API de gerenciamento dos itens.")
 @RestController
 @RequestMapping("/api/v1/itens")
 @RequiredArgsConstructor
@@ -15,34 +18,31 @@ public class ItemController {
 
     private final ItemService service;
 
-    // CADASTRAR ITEM
     @PostMapping()
+    @Operation(summary = "Cadastrar um item")
     public ResponseEntity post(@RequestBody ItemDTO dto) {
         try {
-            service.cadastrarItem(dto);
-            return new ResponseEntity(HttpStatus.CREATED);
+            Long id = service.cadastrarItem(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Item cadastrado com sucesso! ID: " + id);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    // LISTAR TODOS OS ITENS
-    // URL: http://localhost:8080/api/v1/itens
     @GetMapping()
+    @Operation(summary = "Visualiza todos os itens cadastrados.")
     public ResponseEntity getItens() {
         return ResponseEntity.ok(service.getItens());
     }
 
-    // LISTAR TODOS OS ITENS ATIVOS
-    // URL: http://localhost:8080/api/v1/itens
     @GetMapping("/ativos")
+    @Operation(summary = "Visualiza todos os itens cadastrados e ativos.")
     public ResponseEntity getItensAtivos() {
         return ResponseEntity.ok(service.getItensAtivos());
     }
 
-    // BUSCAR ITEM POR ID
-    // URL: http://localhost:8080/api/v1/itens/4
     @GetMapping("/{id}")
+    @Operation(summary = "Visualiza um item em específico pelo id")
     public ResponseEntity getItemById(@PathVariable("id") Long id) {
         try {
             ItemDTO dto = service.getItemById(id);
@@ -53,9 +53,8 @@ public class ItemController {
         }
     }
 
-    // BUSCAR ITEM POR NOME (GET)
-    // URL: http://localhost:8080/api/v1/itens/nome/Picole de Limao
     @GetMapping("/nome/{nome}")
+    @Operation(summary = "Visualiza um item em específico pelo nome")
     public ResponseEntity getItemByName(@PathVariable("nome") String nome) {
         try {
             ItemDTO dto = service.getItemByName(nome);
@@ -68,6 +67,7 @@ public class ItemController {
 
     // ATUALIZAR ITEM (PUT)
     @PutMapping("/{id}/atualizar")
+    @Operation(summary = "Atualiza um item")
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody ItemDTO dto) {
         try {
             service.alterarItem(id, dto);
@@ -78,7 +78,8 @@ public class ItemController {
     }
 
     // INATIVAR ITEM (DELETE)
-    @DeleteMapping("/{id}/deletar")
+    @DeleteMapping("/{id}/inativar")
+    @Operation(summary = "Inativa um item")
     public ResponseEntity inativar(@PathVariable("id") Long id) {
         try {
             service.inativarItem(id);
@@ -89,7 +90,8 @@ public class ItemController {
     }
 
     // EXCLUIR / INATIVAR ITEM (DELETE)
-    @DeleteMapping("/{id}/inativar")
+    @DeleteMapping("/{id}/deletar")
+    @Operation(summary = "Deleta permanetemente um item")
     public ResponseEntity deletar(@PathVariable("id") Long id) {
         try {
             service.deletarItem(id);

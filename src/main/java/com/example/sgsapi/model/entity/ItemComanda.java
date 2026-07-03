@@ -16,7 +16,6 @@ public class ItemComanda {
     private Long id;
 
     private float quantidade;
-    private float preco;
 
     @ManyToOne
     @JoinColumn(name = "comanda_id")

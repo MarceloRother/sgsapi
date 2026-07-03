@@ -23,8 +23,8 @@ public class Usuario {
     private String login;
     private String nome;
     private String senha;
-    private LocalDate dataNascimento;
-    private LocalDate dataContratacao;
+    private String dataNascimento;
+    private String dataContratacao;
 
     @Enumerated(EnumType.STRING)
     private Perfil grupo;

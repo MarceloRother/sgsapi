@@ -20,10 +20,10 @@ public class HistoricoService {
     private final HistoricoRepository historicoRepository;
 
     @Transactional
-    public void registrarMovimentacao(Long produtoId, float quantidade, TipoMovimentacao tipo) {
+    public void registrarMovimentacao(Long loteId, float quantidade, TipoMovimentacao tipo) {
         Historico registro = new Historico();
         registro.setData(LocalDateTime.now());
-        registro.setIdProduto(produtoId);
+        registro.setIdLote(loteId);
         registro.setQuantidade(quantidade);
         registro.setTipoOperacao(tipo);
 
@@ -38,8 +38,9 @@ public class HistoricoService {
         return historicos.stream().map(h -> modelMapper.map(h, HistoricoDTO.class)).collect(Collectors.toList());
     }
 
-    public List<HistoricoDTO> buscarHistoricoPorProduto(Long produtoId) {
-        List<Historico> historicos = historicoRepository.findByIdProduto(produtoId);
+    public List<HistoricoDTO> buscarHistoricoPorLote(Long loteId) {
+        List<Historico> historicos = historicoRepository.findByIdLote(loteId);
+
         ModelMapper modelMapper = new ModelMapper();
         return historicos.stream().map(h -> modelMapper.map(h, HistoricoDTO.class)).collect(Collectors.toList());
     }

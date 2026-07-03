@@ -18,7 +18,7 @@ public class Historico {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime data;
-    private Long idProduto;
+    private Long idLote;
     private float quantidade;
 
     @Enumerated(EnumType.STRING)

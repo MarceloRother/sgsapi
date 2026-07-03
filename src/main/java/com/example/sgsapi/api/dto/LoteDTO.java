@@ -16,6 +16,6 @@ public class LoteDTO {
     private Long idRemessa;
     private String nome;
     private LocalDate dataValidade;
-    private float custoFabrica;
+    private float precoFabrica;
     private float quantidade;
 }

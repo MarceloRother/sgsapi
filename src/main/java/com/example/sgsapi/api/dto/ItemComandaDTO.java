@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 public class ItemComandaDTO {
-    private Long Id;
-    private Long IdComanda;
+    private Long id;
+    private Long idComanda;
     private Long idItem;
     private Long idLote;
     private float quantidade;

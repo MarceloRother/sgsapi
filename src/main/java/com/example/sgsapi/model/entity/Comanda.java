@@ -16,9 +16,8 @@ import java.util.List;
 public class Comanda {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int numeroMesa;
-    private LocalDateTime dataHoraAbertura;
-    private LocalDateTime dataHoraFechamento;
+    private String dataHoraAbertura;
+    private String dataHoraFechamento;
     private boolean aberta;
 
     @OneToMany(cascade = CascadeType.ALL)

@@ -2,11 +2,14 @@ package com.example.sgsapi.api.controller;
 
 import com.example.sgsapi.api.dto.FornecedorDTO;
 import com.example.sgsapi.service.FornecedorService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Fornecedor", description = "API de gerenciamento de fornecedores.")
 @RestController
 @RequestMapping("/api/v1/fornecedores")
 @RequiredArgsConstructor
@@ -15,28 +18,25 @@ public class FornecedorController {
 
     private final FornecedorService service;
 
-    // CADASTRAR FORNECEDOR
-    // URL: http://localhost:8080/api/v1/fornecedores
     @PostMapping()
+    @Operation(summary = "Cadastrar um fornecedor")
     public ResponseEntity post(@RequestBody FornecedorDTO dto) {
         try {
-            service.cadastrarFornecedor(dto);
-            return new ResponseEntity(HttpStatus.CREATED); // 201 Created
+            Long id = service.cadastrarFornecedor(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Fornecedor cadastrado com sucesso! ID: " + id);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage()); // 400 Bad Request
         }
     }
 
-    // LISTAR TODOS OS FORNECEDORES
-    // URL: http://localhost:8080/api/v1/fornecedores
+    @Operation(summary = "Visualizar todos os fornecedores")
     @GetMapping()
     public ResponseEntity getFornecedores() {
         return ResponseEntity.ok(service.consultarFornecedores()); // 200 OK
     }
 
-    // BUSCAR FORNECEDOR POR ID (GET)
-    // URL: http://localhost:8080/api/v1/fornecedores/1
     @GetMapping("/{id}")
+    @Operation(summary = "Visualizar um fornecedor por id")
     public ResponseEntity getFornecedorById(@PathVariable("id") Long id) {
         try {
             FornecedorDTO dto = service.consultarFornecedorPorId(id);
@@ -47,9 +47,8 @@ public class FornecedorController {
         }
     }
 
-    // ATUALIZAR FORNECEDOR (PUT)
-    // URL: http://localhost:8080/api/v1/fornecedores/1
     @PutMapping("/{id}")
+    @Operation(summary = "Atualiza o cadastro de um fornecedor")
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody FornecedorDTO dto) {
         try {
             dto.setId(id);
@@ -60,8 +59,7 @@ public class FornecedorController {
         }
     }
 
-    // INATIVAR FORNECEDOR (DELETE)
-    // URL: http://localhost:8080/api/v1/fornecedores/1
+    @Operation(summary = "Inativa o cadastro de um fornecedor")
     @DeleteMapping("/{id}")
     public ResponseEntity excluir(@PathVariable("id") Long id) {
         try {

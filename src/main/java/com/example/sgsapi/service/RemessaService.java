@@ -21,9 +21,8 @@ public class RemessaService {
     private final FornecedorRepository fornecedorRepository;
 
     @Transactional
-    public void cadastraRemessa(RemessaDTO dto){
-        Fornecedor fornecedor = fornecedorRepository.findById(dto.getFornecedor_id())
-                .orElseThrow(() -> new RuntimeException("Fornecedor não encontrado!"));
+    public Long cadastraRemessa(RemessaDTO dto){
+        Fornecedor fornecedor = fornecedorRepository.findById(dto.getFornecedor_id()).orElseThrow(() -> new RuntimeException("Fornecedor não encontrado!"));
 
         Remessa novaRemessa = new Remessa();
         novaRemessa.setFornecedor(fornecedor);
@@ -32,6 +31,8 @@ public class RemessaService {
         novaRemessa.setCustoTotalFrete(dto.getCustoTotalFrete());
 
         remessaRepository.save(novaRemessa);
+
+        return novaRemessa.getId();
     }
 
     public List<RemessaDTO> consultarRemessa(){

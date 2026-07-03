@@ -19,12 +19,14 @@ public class FornecedorService {
 
     // CADASTRAR
     @Transactional
-    public void cadastrarFornecedor(FornecedorDTO dto) {
+    public Long cadastrarFornecedor(FornecedorDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
 
         // Converte o DTO direto para a Entidade e salva
         Fornecedor novoFornecedor = modelMapper.map(dto, Fornecedor.class);
         fornecedorRepository.save(novoFornecedor);
+
+        return novoFornecedor.getId();
     }
 
     // LISTAR TODOS

@@ -15,7 +15,7 @@ public class UsuarioDTO {
     private String login;
     private String nome;
     private String senha;
-    private LocalDate dataNascimento;
-    private LocalDate dataContratacao;
+    private String dataNascimento;
+    private String dataContratacao;
     private Perfil grupo;
 }

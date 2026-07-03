@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -17,7 +18,7 @@ public class Lote {
     private Long id;
     private String nome;
     private LocalDate dataValidade;
-    private float custoFabrica;
+    private float precoFabrica;
     private float quantidade;
 
     @ManyToOne

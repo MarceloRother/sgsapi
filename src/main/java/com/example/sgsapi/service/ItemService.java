@@ -20,6 +20,31 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
+    @Transactional
+    public Long cadastrarItem(ItemDTO dto) {
+        // Instancia e mapeia a Tabela Nutricional
+        TabelaNutricional nutri = new TabelaNutricional();
+        nutri.setCalorias(dto.getTabelaNutricional().getCalorias());
+        nutri.setGorduras(dto.getTabelaNutricional().getGorduras());
+        nutri.setAcucares(dto.getTabelaNutricional().getAcucares());
+        nutri.setContemGluten(dto.getTabelaNutricional().isContemGluten());
+        nutri.setContemLactose(dto.getTabelaNutricional().isContemLactose());
+        nutri.setContemLeite(dto.getTabelaNutricional().isContemLeite());
+
+        // Instancia e mapeia o Item principal
+        Item novoItem = new Item();
+        novoItem.setNome(dto.getNome());
+        novoItem.setTipo(dto.getTipo());
+        novoItem.setTabelaNutricional(nutri); // Associa o relacionamento @OneToOne
+
+        nutri.setItem(novoItem);
+        novoItem.setTabelaNutricional(nutri);
+
+        itemRepository.save(novoItem);
+
+        return novoItem.getId();
+    }
+
     public List<ItemDTO> getItens() {
         List<Item> itens = itemRepository.findAll();
         ModelMapper modelMapper = new ModelMapper();
@@ -47,29 +72,6 @@ public class ItemService {
 
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(item, ItemDTO.class);
-    }
-
-    @Transactional
-    public void cadastrarItem(ItemDTO dto) {
-        // Instancia e mapeia a Tabela Nutricional
-        TabelaNutricional nutri = new TabelaNutricional();
-        nutri.setCalorias(dto.getTabelaNutricional().getCalorias());
-        nutri.setGorduras(dto.getTabelaNutricional().getGorduras());
-        nutri.setAcucares(dto.getTabelaNutricional().getAcucares());
-        nutri.setContemGluten(dto.getTabelaNutricional().isContemGluten());
-        nutri.setContemLactose(dto.getTabelaNutricional().isContemLactose());
-        nutri.setContemLeite(dto.getTabelaNutricional().isContemLeite());
-
-        // Instancia e mapeia o Item principal
-        Item novoItem = new Item();
-        novoItem.setNome(dto.getNome());
-        novoItem.setTipo(dto.getTipo());
-        novoItem.setTabelaNutricional(nutri); // Associa o relacionamento @OneToOne
-
-        nutri.setItem(novoItem);
-        novoItem.setTabelaNutricional(nutri);
-
-        itemRepository.save(novoItem);
     }
 
     @Transactional

@@ -6,6 +6,7 @@ import com.example.sgsapi.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -52,12 +53,17 @@ public class SecurityConfig {
                 .cors(cors -> cors.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/usuarios/**").permitAll()
-                        .requestMatchers("/api/v1/clientes/**").permitAll()
-                        .requestMatchers("/api/v1/produtos/**").permitAll()
-                        .requestMatchers("/api/v1/metodos-pagamento/**").hasAnyRole("ADMIN")
-                        .requestMatchers("/api/v1/lojas/**").hasAnyRole("ADMIN")
-                        .requestMatchers("/api/v1/colaboradores/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/api/v1/comanda/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/usuarios/auth").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/usuarios").permitAll()
+                        .requestMatchers("/api/v1/usuarios/{id}").hasAnyRole("ADMIN")
+                        .requestMatchers("/api/v1/comandas/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/api/v1/lotes/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/api/v1/remessas/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/api/v1/comandas/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/api/v1/historicos/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/api/v1/itens/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/api/v1/fornecedores/**").hasAnyRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
