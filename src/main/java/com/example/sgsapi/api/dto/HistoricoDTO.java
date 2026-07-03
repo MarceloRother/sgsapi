@@ -12,9 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class HistoricoDTO {
     private Long id;
-    private Long idLote;
-    private TipoMovimentacao tipo;
+    private Long idProduto;
+    private TipoMovimentacao tipoOperacao;
     private float quantidade;
-    private LocalDateTime dataHoraMovimentacao;
-    private String nomeItem;
+    private LocalDateTime data;
 }

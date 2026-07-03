@@ -35,6 +35,7 @@ public class LoteService {
         Lote novoLote = new Lote();
         novoLote.setItem(itemReal);
         novoLote.setRemessa(remessaReal);
+        novoLote.setNome(dto.getNome());
         novoLote.setDataValidade(dto.getDataValidade());
         novoLote.setPrecoFabrica(dto.getPrecoFabrica());
         novoLote.setQuantidade(dto.getQuantidade());
@@ -66,6 +67,10 @@ public class LoteService {
     public void darBaixaLote(Long idLote, float quantidade) {
         // Encontra lote pelo ID
         Lote lote = loteRepository.findById(idLote).orElseThrow(() -> new RuntimeException("Lote não encontrado!"));
+
+        if (quantidade > lote.getQuantidade()) {
+            throw new RuntimeException("Quantidade insuficiente no lote! Disponível: " + lote.getQuantidade());
+        }
 
         // Da a baixa do lote
         lote.setQuantidade(lote.getQuantidade() - quantidade);

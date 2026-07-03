@@ -62,7 +62,11 @@ public class UsuarioService implements UserDetailsService {
         List<Usuario> usuarios = usuarioRepository.findAll();
         ModelMapper modelMapper = new ModelMapper();
 
-        return usuarios.stream().map(usuario -> modelMapper.map(usuario, UsuarioDTO.class)).collect(Collectors.toList());
+        return usuarios.stream().map(usuario -> {
+            UsuarioDTO dto = modelMapper.map(usuario, UsuarioDTO.class);
+            dto.setSenha(null); // Nunca expor a senha (mesmo criptografada) na API
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     @Override
