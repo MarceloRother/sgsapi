@@ -21,7 +21,6 @@ public class Comanda {
     private LocalDateTime dataHoraFechamento;
     private boolean aberta;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "comanda_id")
+    @OneToMany(mappedBy = "comanda", cascade = CascadeType.ALL)
     private List<ItemComanda> itens;
 }

@@ -57,6 +57,7 @@ public class RemessaService {
 
         remessaAtual.setCustoTotalFrete(remessaNovaDto.getCustoTotalFrete());
         remessaAtual.setNumeroNotaFiscal(remessaNovaDto.getNumeroNotaFiscal());
+        remessaAtual.setDataChegada(remessaNovaDto.getDataChegada());
 
         remessaRepository.save(remessaAtual);
     }

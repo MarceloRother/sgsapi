@@ -63,6 +63,7 @@ public class ItemService {
         // Instancia e mapeia o Item principal
         Item novoItem = new Item();
         novoItem.setNome(dto.getNome());
+        novoItem.setPrecoVenda(dto.getPrecoVenda());
         novoItem.setTipo(dto.getTipo());
         novoItem.setTabelaNutricional(nutri); // Associa o relacionamento @OneToOne
 
@@ -80,6 +81,7 @@ public class ItemService {
         // Atualiza os dados básicos
         itemExistente.setNome(dto.getNome());
         itemExistente.setPrecoVenda(dto.getPrecoVenda());
+        itemExistente.setTipo(dto.getTipo());
 
         // Atualiza a tabela nutricional
         TabelaNutricional nutri = itemExistente.getTabelaNutricional();

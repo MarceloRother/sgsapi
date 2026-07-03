@@ -35,10 +35,14 @@ public class LoteController {
     }
 
     // LISTAR LOTE POR ID
-    // URL: http://localhost:8080/api/v1/lotes
+    // URL: http://localhost:8080/api/v1/lotes/1
     @GetMapping("/{id}")
-    public ResponseEntity loteById(Long id) {
-        return ResponseEntity.ok(service.loteByBid(id));
+    public ResponseEntity loteById(@PathVariable("id") Long id) {
+        try {
+            return ResponseEntity.ok(service.loteByBid(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     // CALCULAR ESTOQUE TOTAL DE UM ITEM

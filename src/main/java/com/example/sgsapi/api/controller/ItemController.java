@@ -78,7 +78,7 @@ public class ItemController {
     }
 
     // INATIVAR ITEM (DELETE)
-    @DeleteMapping("/{id}/deletar")
+    @DeleteMapping("/{id}/inativar")
     public ResponseEntity inativar(@PathVariable("id") Long id) {
         try {
             service.inativarItem(id);
@@ -88,8 +88,8 @@ public class ItemController {
         }
     }
 
-    // EXCLUIR / INATIVAR ITEM (DELETE)
-    @DeleteMapping("/{id}/inativar")
+    // EXCLUIR ITEM (DELETE)
+    @DeleteMapping("/{id}/deletar")
     public ResponseEntity deletar(@PathVariable("id") Long id) {
         try {
             service.deletarItem(id);
