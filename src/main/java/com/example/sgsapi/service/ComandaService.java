@@ -6,6 +6,7 @@ import com.example.sgsapi.model.entity.Comanda;
 import com.example.sgsapi.model.entity.Item;
 import com.example.sgsapi.model.entity.ItemComanda;
 import com.example.sgsapi.model.entity.Lote;
+import com.example.sgsapi.model.enums.TipoMovimentacao;
 import com.example.sgsapi.model.repository.ComandaRepository;
 import com.example.sgsapi.model.repository.ItemComandaRepository;
 import com.example.sgsapi.model.repository.ItemRepository;
@@ -27,6 +28,7 @@ public class ComandaService {
     private final ItemComandaRepository itemComandaRepository;
     private final ItemRepository itemRepository;
     private final LoteRepository loteRepository;
+    private final HistoricoService historicoService;
 
     @Transactional
     public Long abrirComanda() {
@@ -79,27 +81,52 @@ public class ComandaService {
         novoPedido.setItem(item);
         novoPedido.setQuantidade(dto.getQuantidade());
 
+        historicoService.registrarMovimentacao(lote.getId(), dto.getQuantidade(), TipoMovimentacao.SAIDA);
+
         itemComandaRepository.save(novoPedido);
+
     }
 
     @Transactional
     public void alteraItem(ItemComandaDTO dto){
-        Comanda comanda = comandaRepository.findById(dto.getIdComanda()).orElseThrow(() -> new RuntimeException("Comanda não encontrada!"));
-        // Bloqueia a venda se o cliente já pagou
+        Comanda comanda = comandaRepository.findById(dto.getIdComanda())
+                .orElseThrow(() -> new RuntimeException("Comanda não encontrada!"));
+
         if (!comanda.isAberta()) {
-            throw new RuntimeException("Não é possível adicionar itens. Esta comanda já está fechada!");
+            throw new RuntimeException("Não é possível alterar itens. Esta comanda já está fechada!");
         }
-        Lote lote = loteRepository.findById(dto.getIdItem()).orElseThrow(() -> new RuntimeException("Lote não encontrado no cardápio!"));
-        Item item = itemRepository.findById(dto.getIdItem()).orElseThrow(() -> new RuntimeException("Item não encontrado no cardápio!"));
 
+        ItemComanda pedidoAntigo = itemComandaRepository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Item da comanda não encontrado!"));
 
-        ItemComanda pedido = itemComandaRepository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("ItemComanda não encontrado!"));
-        pedido.setComanda(comanda);
-        pedido.setLote(lote);
-        pedido.setItem(item);
-        pedido.setQuantidade(dto.getQuantidade());
+        Lote loteAntigo = pedidoAntigo.getLote();
+        float quantidadeAntiga = pedidoAntigo.getQuantidade();
 
-        itemComandaRepository.save(pedido);
+        loteAntigo.setQuantidade(loteAntigo.getQuantidade() + quantidadeAntiga);
+        loteRepository.save(loteAntigo);
+
+        historicoService.registrarMovimentacao(loteAntigo.getId(), quantidadeAntiga, TipoMovimentacao.ENTRADA);
+
+        Lote loteNovo = loteRepository.findById(dto.getIdLote()) // Corrigido para getIdLote()
+                .orElseThrow(() -> new RuntimeException("Novo lote não encontrado!"));
+
+        if (loteNovo.getQuantidade() < dto.getQuantidade()) {
+            throw new RuntimeException("Estoque insuficiente no novo lote! Disponível: " + loteNovo.getQuantidade());
+        }
+
+        loteNovo.setQuantidade(loteNovo.getQuantidade() - dto.getQuantidade());
+        loteRepository.save(loteNovo);
+
+        historicoService.registrarMovimentacao(loteNovo.getId(), dto.getQuantidade(), TipoMovimentacao.SAIDA);
+
+        Item itemNovo = loteNovo.getItem();
+
+        pedidoAntigo.setComanda(comanda);
+        pedidoAntigo.setLote(loteNovo);
+        pedidoAntigo.setItem(itemNovo);
+        pedidoAntigo.setQuantidade(dto.getQuantidade());
+
+        itemComandaRepository.save(pedidoAntigo);
     }
 
     @Transactional
@@ -116,5 +143,7 @@ public class ComandaService {
         ItemComanda pedido = itemComandaRepository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("ItemComanda não encontrado!"));
 
         itemComandaRepository.delete(pedido);
+
+        historicoService.registrarMovimentacao(lote.getId(), dto.getQuantidade(), TipoMovimentacao.ENTRADA);
     }
 }
